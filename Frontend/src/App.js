@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react'
-import { Clients } from './components/clients/Clients';
-import {Concesionario} from './components/concesionario/Concesionario';
+import React from 'react'
+import CreateClient from './components/users/CreateClient'
 
 const App = () => {
 
   return (
-    <div></div>
+    <div>
+      <CreateClient/>
+    </div>
   )
 }
 

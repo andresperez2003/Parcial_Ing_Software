@@ -6,7 +6,7 @@ const {generateToken, refreshToken} = require('../utils/jwt')
 //Crear la funcion para el registro - singIn
 
 const sigin = async(req, res) =>{
-    const {firstname, lastname, email, current_password} = req.body;
+    const {firstname, lastname, email, phone, current_password} = req.body;
 
     try {
         if(!email){
@@ -29,6 +29,7 @@ const sigin = async(req, res) =>{
         const newUser = await userModel.create({
             firstname,
             lastname,
+            phone,
             email:emailLowerCase,
             current_password: current_password_hash
         })
