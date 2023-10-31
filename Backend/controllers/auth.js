@@ -12,7 +12,7 @@ const correo = process.env.CORREO
 //Crear la funcion para el registro - singIn
 
 
-const sendEmail = async()=>{
+const sendEmail = async(id)=>{
     const config = {
         service: "gmail",
         auth: {
@@ -26,7 +26,7 @@ const sendEmail = async()=>{
         from :correo,
         to:correo,
         subject: "Correo de pruebas",
-        text:"Envio de prueba"
+        html:`Ingresa al siguiente enlace para confirmar tu correo <a href='http://localhost:3100/api/v1/auth/activatedAccount/${id}'>Confirmacion de correo<a>`
     }
       const transport = nodemailer.createTransport(config)
 
@@ -74,7 +74,7 @@ const sigin = async(req, res) =>{
         })
 
         const userStorage = await newUser.save();
-        sendEmail()
+        sendEmail(newUser._id)
         res.status(201).json({userStorage});
 
     
@@ -136,8 +136,21 @@ const getMe = async(req,res)=>{
     }
 }
 
+const activatedAccount = async (req,res)=>{
+    try {
+        const {id} = req.params;
+        console.log(id)
+        const userActived= await userModel.findByIdAndUpdate(id,{active:true})
+        console.log(userActived)
+        res.redirect('https://github.com/andresperez2003/Parcial_Ing_Software')
+    } catch (error) {
+        
+    }
+}
+
 module.exports={
     sigin,
     login,
-    getMe
+    getMe,
+    activatedAccount
 };
