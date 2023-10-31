@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert';
 
 const CreateClient = () => {
-    const urlPostUser ="http://localhost:3100/api/v1/users/new-user";
+    const urlPostUser ="http://localhost:3100/api/v1/auth/sigin";
 
     const [formUser, setFormUser] = useState({firstname: '', lastname: '', email:'',current_password:'',phone:''});
     const [checked, setChecked] = useState(false);
