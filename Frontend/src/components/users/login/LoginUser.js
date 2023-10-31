@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert';
 
 const LoginUser = () => {
+    sessionStorage.removeItem('token')
     const urlPostUser ="http://localhost:3100/api/v1/auth/login";
 
     const [formUser, setFormUser] = useState({email:'',current_password:''});
@@ -55,6 +56,7 @@ const LoginUser = () => {
             }
 
             console.log('Ingreso exitoso:', data);
+            localStorage.setItem('token', data.access )
 
             /* indow.location.href = 'http://localhost:3000/dashboard'; */
   
@@ -96,7 +98,7 @@ const LoginUser = () => {
 <TextField type='text'  label="Correo" variant="outlined" value={formUser.email} name='email' onChange={handleInputChange} />
 </Grid>
 <Grid item xs={6}>
-<TextField type='text'  label="Contraseña" variant="outlined" value={formUser.current_password} name='current_password' onChange={handleInputChange} />
+<TextField type='password'  label="Contraseña" variant="outlined" value={formUser.current_password} name='current_password' onChange={handleInputChange} />
 
 </Grid>
 
