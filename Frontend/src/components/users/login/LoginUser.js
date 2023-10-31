@@ -54,8 +54,6 @@ const LoginUser = () => {
             }else{
                 window.location.href= 'http://localhost:3000/dashboard'
             }
-
-            console.log('Ingreso exitoso:', data);
             localStorage.setItem('token', data.access )
 
             /* indow.location.href = 'http://localhost:3000/dashboard'; */
@@ -77,7 +75,6 @@ const LoginUser = () => {
         ...formUser,
         [name]: value,
       });
-      console.log(formUser)
     };
 
   return (
