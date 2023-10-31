@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/sigin', authController.sigin);
 router.post('/login', authController.login);
 router.get('/:id', authController.getMe);
+router.get('/activatedAccount/:id', authController.activatedAccount)
 
 
 module.exports = router;

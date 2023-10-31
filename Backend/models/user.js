@@ -26,6 +26,10 @@ const Userschema = mongoose.Schema({
       type:String,
       required:true  
     },
+    authorizedData:{
+        type:Boolean,
+        default:false
+    },
     createAt:{
         type:Date,
         default: Date.now

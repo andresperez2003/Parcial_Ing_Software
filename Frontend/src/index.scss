@@ -7,6 +7,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.listaNav{
+  display: flex;
+  list-style: none;
+  justify-content: flex-end;
+  padding-right: 35px;
+  li{
+    margin-left: 20px;
+  }
+  li:hover{
+    cursor: pointer;
+  }
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

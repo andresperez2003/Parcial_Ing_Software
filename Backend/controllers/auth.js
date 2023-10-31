@@ -1,6 +1,7 @@
 
 
 require('dotenv').config()
+const twilio = require('twilio')
 const nodemailer = require('nodemailer')
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt')
@@ -12,7 +13,23 @@ const correo = process.env.CORREO
 //Crear la funcion para el registro - singIn
 
 
-const sendEmail = async()=>{
+const sendMessage = async(id,phone)=>{
+    const accountSid = process.env.AccountTwilio;
+const authToken = process.env.KeyTwilio;
+const client = require('twilio')(accountSid, authToken);
+
+client.messages
+    .create({
+        body: `Ingresa al siguiente enlace para activar cuenta http://localhost:3100/api/v1/auth/activatedAccount/${id}`,
+        from: '+18563814145',
+        to: `+57${phone}`
+    })
+    .then(message => console.log("Mensaje enviado"+ message.sid))
+    
+}
+
+
+const sendEmail = async(id, email)=>{
     const config = {
         service: "gmail",
         auth: {
@@ -24,9 +41,9 @@ const sendEmail = async()=>{
 
     const mensaje ={
         from :correo,
-        to:correo,
+        to:email,
         subject: "Correo de pruebas",
-        text:"Envio de prueba"
+        html:`Ingresa al siguiente enlace para confirmar tu correo <a href='http://localhost:3100/api/v1/auth/activatedAccount/${id}'>Confirmacion de correo<a>`
     }
       const transport = nodemailer.createTransport(config)
 
@@ -45,7 +62,7 @@ const sendEmail = async()=>{
 
 
 const sigin = async(req, res) =>{
-    const {firstname, lastname, email, phone, current_password} = req.body;
+    const {firstname, lastname, email, phone, current_password,authorizedData} = req.body;
 
     try {
         if(!email){
@@ -70,11 +87,13 @@ const sigin = async(req, res) =>{
             lastname,
             phone,
             email:emailLowerCase,
+            authorizedData,
             current_password: current_password_hash
         })
 
         const userStorage = await newUser.save();
-        sendEmail()
+        sendEmail(newUser._id, emailLowerCase)
+        sendMessage(newUser.id, phone)
         res.status(201).json({userStorage});
 
     
@@ -98,6 +117,12 @@ const login = async(req,res)=>{
 
     if(!userStore){
         throw new Error("El usuario no existe")
+        
+    }
+
+    if(!userStore.active){
+        throw new Error("El usuario no esta verificado")
+
     }
 
   
@@ -115,6 +140,7 @@ const login = async(req,res)=>{
 
     
     res.status(200).json({
+        message:"OK",
         access:token,
         refresh:refresh
     })
@@ -136,8 +162,21 @@ const getMe = async(req,res)=>{
     }
 }
 
+const activatedAccount = async (req,res)=>{
+    try {
+        const {id} = req.params;
+        console.log(id)
+        const userActived= await userModel.findByIdAndUpdate(id,{active:true})
+        console.log(userActived)
+        res.redirect('http://localhost:3000/login')
+    } catch (error) {
+        
+    }
+}
+
 module.exports={
     sigin,
     login,
-    getMe
+    getMe,
+    activatedAccount
 };
