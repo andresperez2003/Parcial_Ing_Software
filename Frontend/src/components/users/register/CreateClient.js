@@ -95,7 +95,6 @@ const CreateClient = () => {
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      handleChange()
       setFormUser({
         ...formUser,
         [name]: value,
@@ -128,7 +127,7 @@ const CreateClient = () => {
 
       
 <TextField type='text'  label="Correo" variant="outlined"  name='email' onChange={handleInputChange} />
-{isValid ? <p>Correo válido</p> : <p>Correo inválido</p>}
+
 </Grid>
 <Grid item xs={5}>
 <TextField type='text'  label="Telefono" variant="outlined" value={formUser.phone} name='phone' onChange={handleInputChange} />
