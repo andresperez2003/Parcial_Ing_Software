@@ -5,13 +5,25 @@ import Alert from '@mui/material/Alert';
 
 const CreateClient = () => {
     const urlPostUser ="http://localhost:3100/api/v1/auth/sigin";
-
+    sessionStorage.removeItem('token')
     const [formUser, setFormUser] = useState({firstname: '', lastname: '', email:'',current_password:'',phone:'', authorizedData:false});
     const [checked, setChecked] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [submitUser, setsubmitUser] = useState(false);
     const [confirmPassword, setconfirmPassword] = useState('');
-    
+    const [email, setEmail] = useState('');
+    const [isValid, setIsValid] = useState(false);
+  
+    const validateEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+  
+    const handleChange = (event) => {
+      const inputEmail = event.target.value;
+      setEmail(inputEmail);
+      setIsValid(validateEmail(inputEmail));
+    };
 
 
   
@@ -70,7 +82,6 @@ const CreateClient = () => {
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log('Post creado:', data);
             window.location.href = 'http://localhost:3000/login';
           })
           .catch((error) => {
@@ -84,11 +95,11 @@ const CreateClient = () => {
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
+      handleChange()
       setFormUser({
         ...formUser,
         [name]: value,
       });
-      console.log(formUser)
     };
 
   return (
@@ -114,8 +125,10 @@ const CreateClient = () => {
 </Grid>
 
 <Grid item xs={7}>
-<TextField type='text'  label="Correo" variant="outlined" value={formUser.email} name='email' onChange={handleInputChange} />
 
+      
+<TextField type='text'  label="Correo" variant="outlined"  name='email' onChange={handleInputChange} />
+{isValid ? <p>Correo válido</p> : <p>Correo inválido</p>}
 </Grid>
 <Grid item xs={5}>
 <TextField type='text'  label="Telefono" variant="outlined" value={formUser.phone} name='phone' onChange={handleInputChange} />
