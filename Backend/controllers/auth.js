@@ -12,7 +12,7 @@ const correo = process.env.CORREO
 //Crear la funcion para el registro - singIn
 
 
-const sendEmail = async(id)=>{
+const sendEmail = async(id, email)=>{
     const config = {
         service: "gmail",
         auth: {
@@ -24,7 +24,7 @@ const sendEmail = async(id)=>{
 
     const mensaje ={
         from :correo,
-        to:correo,
+        to:email,
         subject: "Correo de pruebas",
         html:`Ingresa al siguiente enlace para confirmar tu correo <a href='http://localhost:3100/api/v1/auth/activatedAccount/${id}'>Confirmacion de correo<a>`
     }
@@ -45,7 +45,7 @@ const sendEmail = async(id)=>{
 
 
 const sigin = async(req, res) =>{
-    const {firstname, lastname, email, phone, current_password} = req.body;
+    const {firstname, lastname, email, phone, current_password,authorizedData} = req.body;
 
     try {
         if(!email){
@@ -70,11 +70,12 @@ const sigin = async(req, res) =>{
             lastname,
             phone,
             email:emailLowerCase,
+            authorizedData,
             current_password: current_password_hash
         })
 
         const userStorage = await newUser.save();
-        sendEmail(newUser._id)
+        sendEmail(newUser._id, emailLowerCase)
         res.status(201).json({userStorage});
 
     
@@ -98,6 +99,12 @@ const login = async(req,res)=>{
 
     if(!userStore){
         throw new Error("El usuario no existe")
+        
+    }
+
+    if(!userStore.active){
+        throw new Error("El usuario no esta verificado")
+
     }
 
   
@@ -115,6 +122,7 @@ const login = async(req,res)=>{
 
     
     res.status(200).json({
+        message:"OK",
         access:token,
         refresh:refresh
     })
@@ -142,7 +150,7 @@ const activatedAccount = async (req,res)=>{
         console.log(id)
         const userActived= await userModel.findByIdAndUpdate(id,{active:true})
         console.log(userActived)
-        res.redirect('https://github.com/andresperez2003/Parcial_Ing_Software')
+        res.redirect('http://localhost:3000/login')
     } catch (error) {
         
     }
