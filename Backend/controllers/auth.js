@@ -1,9 +1,48 @@
 
+
+require('dotenv').config()
+const nodemailer = require('nodemailer')
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt')
-const {generateToken, refreshToken} = require('../utils/jwt')
+const {generateToken, refreshToken} = require('../utils/jwt');
+const { config } = require('dotenv');
+const contraseña =  process.env.CONTRASENA
+const correo = process.env.CORREO
 
 //Crear la funcion para el registro - singIn
+
+
+const sendEmail = async()=>{
+    const config = {
+        service: "gmail",
+        auth: {
+          // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+          user: correo,
+          pass: contraseña,
+        },
+    };
+
+    const mensaje ={
+        from :correo,
+        to:correo,
+        subject: "Correo de pruebas",
+        text:"Envio de prueba"
+    }
+      const transport = nodemailer.createTransport(config)
+
+      transport.sendMail(mensaje, (error, info) => {
+        if (error) {
+          console.log('Error al enviar el correo:', error);
+        } else {
+          console.log('Correo enviado:', info.response);
+        }
+      });
+
+ 
+
+
+}
+
 
 const sigin = async(req, res) =>{
     const {firstname, lastname, email, phone, current_password} = req.body;
@@ -35,7 +74,7 @@ const sigin = async(req, res) =>{
         })
 
         const userStorage = await newUser.save();
-
+        sendEmail()
         res.status(201).json({userStorage});
 
     
