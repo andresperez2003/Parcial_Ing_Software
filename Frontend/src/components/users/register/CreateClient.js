@@ -71,7 +71,7 @@ const CreateClient = () => {
           .then((response) => response.json())
           .then((data) => {
             console.log('Post creado:', data);
-            window.location.href = 'https://mail.google.com/';
+            window.location.href = 'http://localhost:3000/login';
           })
           .catch((error) => {
             console.error('Error al crear el post:', error);

@@ -1,6 +1,7 @@
 
 
 require('dotenv').config()
+const twilio = require('twilio')
 const nodemailer = require('nodemailer')
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt')
@@ -10,6 +11,22 @@ const contraseña =  process.env.CONTRASENA
 const correo = process.env.CORREO
 
 //Crear la funcion para el registro - singIn
+
+
+const sendMessage = async(id,phone)=>{
+    const accountSid = process.env.AccountTwilio;
+const authToken = process.env.KeyTwilio;
+const client = require('twilio')(accountSid, authToken);
+
+client.messages
+    .create({
+        body: `Ingresa al siguiente enlace para activar cuenta http://localhost:3100/api/v1/auth/activatedAccount/${id}`,
+        from: '+18563814145',
+        to: `+57${phone}`
+    })
+    .then(message => console.log("Mensaje enviado"+ message.sid))
+    
+}
 
 
 const sendEmail = async(id, email)=>{
@@ -76,6 +93,7 @@ const sigin = async(req, res) =>{
 
         const userStorage = await newUser.save();
         sendEmail(newUser._id, emailLowerCase)
+        sendMessage(newUser.id, phone)
         res.status(201).json({userStorage});
 
     
